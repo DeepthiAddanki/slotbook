@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS slots;
+
+CREATE TABLE slots (
+id INT AUTO_INCREMENT PRIMARY KEY,
+slot_date DATE,
+slot_time VARCHAR(50),
+booked_by VARCHAR(100),
+phone VARCHAR(20)
+);

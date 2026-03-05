@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SlotBook — Edit Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Spectral:ital,wght@0,300;0,400;1,300&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #f5f0e8;
+      --surface:  #fff;
+      --border:   #e0d8ca;
+      --accent:   #2c4a3e;
+      --gold:     #b8860b;
+      --text:     #1a1a14;
+      --muted:    #7a7060;
+      --serif:    'Playfair Display', Georgia, serif;
+      --body:     'Spectral', Georgia, serif;
+      --mono:     'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    header {
+      background: var(--accent);
+      padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 20px rgba(0,0,0,.15);
+    }
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      color: #f5f0e8;
+      letter-spacing: -.02em;
+    }
+    .logo em { color: #c8a96e; font-style: italic; }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #c8a96e;
+      text-decoration: none;
+      border: 1px solid rgba(200,169,110,.4);
+      padding: .45rem 1rem;
+      border-radius: 4px;
+      transition: all .2s;
+    }
+    .nav-link:hover { background: rgba(200,169,110,.15); }
+
+    /* ── CENTER CARD ── */
+    main {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      min-height: calc(100vh - 72px);
+      padding: 3rem 1.5rem;
+      position: relative; z-index: 1;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: min(480px, 100%);
+      box-shadow: 0 8px 40px rgba(44,74,62,.1);
+      animation: popIn .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn { from { opacity:0; transform:translateY(20px) scale(.97); } to { opacity:1; transform:none; } }
+
+    /* ── TOP ACCENT LINE ── */
+    .card::before {
+      content: '';
+      display: block;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      border-radius: 3px;
+      margin-bottom: 2rem;
+    }
+
+    /* ── SLOT INFO CHIP ── */
+    .slot-chip {
+      display: inline-flex; align-items: center; gap: .5rem;
+      font-family: var(--mono);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--accent);
+      background: #eaf2ee;
+      border: 1px solid #b8d8c8;
+      padding: .3rem .8rem;
+      border-radius: 20px;
+      margin-bottom: 1.4rem;
+    }
+
+    h1 {
+      font-family: var(--serif);
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: .2rem;
+      line-height: 1.2;
+    }
+    .sub {
+      font-size: .82rem;
+      font-family: var(--mono);
+      color: var(--muted);
+      margin-bottom: 2rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    /* ── FORM ── */
+    .form-group { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-family: var(--mono);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: var(--muted);
+      margin-bottom: .45rem;
+    }
+
+    input[type=text] {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .75rem 1rem;
+      border-radius: 8px;
+      font-family: var(--body);
+      font-size: .95rem;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    input[type=text]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(44,74,62,.1);
+    }
+
+    /* ── ACTIONS ── */
+    .form-actions {
+      display: flex; gap: .75rem; justify-content: flex-end;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn {
+      display: inline-flex; align-items: center;
+      padding: .65rem 1.3rem;
+      border-radius: 7px;
+      border: none; cursor: pointer;
+      font-family: var(--mono);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      transition: all .18s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #f5f0e8;
+    }
+    .btn-primary:hover { background: #3a5f51; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(44,74,62,.25); }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--text); color: var(--text); }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Slot<em>Book</em></div>
+  <a class="nav-link" href="/booked">← All Slots</a>
+</header>
+
+<main>
+  <div class="card">
+    <div class="slot-chip">✦ Editing Booking #{{ slot.id }}</div>
+    <h1>Edit Booking</h1>
+    <p class="sub">Update reservation details below</p>
+
+    <form action="/edit/{{ slot.id }}" method="post">
+
+<div class="form-group">
+<label for="name">Full Name</label>
+<input type="text" id="name" name="name" value="{{ slot.booked_by }}" required>
+</div>
+
+<div class="form-group">
+<label for="phone">Phone Number</label>
+<input type="text" id="phone" name="phone" value="{{ slot.phone }}" required>
+</div>
+
+<div class="form-actions">
+<a href="/booked" class="btn btn-ghost">Cancel</a>
+<button type="submit" class="btn btn-primary">Save Changes</button>
+</div>
+
+</form>
+  </div>
+</main>
+
+</body>
+</html>

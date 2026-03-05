@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SlotBook — Booked Slots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Spectral:ital,wght@0,300;0,400;1,300&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg:       #f5f0e8;
+      --surface:  #fff;
+      --border:   #e0d8ca;
+      --accent:   #2c4a3e;
+      --gold:     #b8860b;
+      --red:      #8b2020;
+      --text:     #1a1a14;
+      --muted:    #7a7060;
+      --serif:    'Playfair Display', Georgia, serif;
+      --body:     'Spectral', Georgia, serif;
+      --mono:     'JetBrains Mono', monospace;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--body);
+      font-size: 16px;
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+      background-size: 40px 40px;
+      opacity: .35;
+      pointer-events: none;
+    }
+
+    header {
+      background: var(--accent);
+      padding: 1.5rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 20px rgba(0,0,0,.15);
+    }
+    .logo {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      color: #f5f0e8;
+      letter-spacing: -.02em;
+    }
+    .logo em { color: #c8a96e; font-style: italic; }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: .72rem;
+      text-transform: uppercase;
+      letter-spacing: .14em;
+      color: #c8a96e;
+      text-decoration: none;
+      border: 1px solid rgba(200,169,110,.4);
+      padding: .45rem 1rem;
+      border-radius: 4px;
+      transition: all .2s;
+    }
+    .nav-link:hover { background: rgba(200,169,110,.15); }
+
+    main {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+      position: relative; z-index: 1;
+    }
+
+    .page-heading {
+      font-family: var(--serif);
+      font-size: 2.4rem;
+      color: var(--accent);
+      margin-bottom: .25rem;
+      line-height: 1.2;
+    }
+    .page-sub {
+      font-size: .85rem;
+      font-family: var(--mono);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      margin-bottom: 2.5rem;
+    }
+    .page-sub::before { content: '— '; }
+
+    /* ── COUNT CHIP ── */
+    .count-chip {
+      display: inline-flex; align-items: center; gap: .5rem;
+      background: var(--accent);
+      color: #c8a96e;
+      font-family: var(--mono);
+      font-size: .7rem;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      padding: .35rem .9rem;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+    .count-chip .num {
+      background: #c8a96e;
+      color: var(--accent);
+      font-weight: 400;
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem;
+    }
+
+    /* ── TABLE ── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(44,74,62,.08);
+      animation: rise .4s ease both;
+    }
+    @keyframes rise { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+    table { width: 100%; border-collapse: collapse; }
+
+    thead th {
+      background: var(--accent);
+      color: #c8a96e;
+      font-family: var(--mono);
+      font-size: .68rem;
+      text-transform: uppercase;
+      letter-spacing: .16em;
+      padding: 1rem 1.4rem;
+      text-align: left;
+      font-weight: 400;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+      animation: rowIn .3s ease both;
+    }
+    tbody tr:nth-child(1) { animation-delay: .05s; }
+    tbody tr:nth-child(2) { animation-delay: .10s; }
+    tbody tr:nth-child(3) { animation-delay: .15s; }
+    tbody tr:nth-child(4) { animation-delay: .20s; }
+    tbody tr:nth-child(5) { animation-delay: .25s; }
+    @keyframes rowIn { from { opacity:0; transform:translateX(-6px); } to { opacity:1; transform:none; } }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f9f5ed; }
+
+    tbody td { padding: 1.1rem 1.4rem; vertical-align: middle; }
+
+    .slot-time {
+      font-family: var(--mono);
+      font-size: .85rem;
+      color: var(--accent);
+    }
+
+    .booker-name {
+      font-weight: 400;
+      color: var(--text);
+    }
+    .booker-sub {
+      display: block;
+      font-size: .75rem;
+      font-family: var(--mono);
+      color: var(--muted);
+      margin-top: 1px;
+    }
+
+    /* ── LEFT ACCENT BAR ── */
+    tbody tr td:first-child { border-left: 3px solid transparent; transition: border-color .2s; }
+    tbody tr:hover td:first-child { border-left-color: var(--gold); }
+
+    /* ── EMPTY STATE ── */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted);
+    }
+    .empty-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .empty h3 { font-family: var(--serif); font-size: 1.3rem; color: var(--text); margin-bottom: .4rem; }
+
+    .page-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+.action-links{
+display:flex;
+gap:8px;
+}
+
+.btn{
+display:inline-flex;
+align-items:center;
+padding:.4rem .8rem;
+border-radius:6px;
+text-decoration:none;
+font-family:var(--mono);
+font-size:.7rem;
+text-transform:uppercase;
+letter-spacing:.08em;
+}
+
+.btn-edit{
+border:1px solid #b8860b;
+color:#b8860b;
+background:transparent;
+}
+
+.btn-edit:hover{
+background:#b8860b;
+color:white;
+}
+
+.btn-cancel{
+border:1px solid #8b2020;
+color:#8b2020;
+background:transparent;
+}
+
+.btn-cancel:hover{
+background:#8b2020;
+color:white;
+}
+
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Slot<em>Book</em></div>
+  <a class="nav-link" href="/">← All Slots</a>
+</header>
+
+<main>
+  <h1 class="page-heading">Booked Slots</h1>
+  <p class="page-sub">Current reservations</p>
+
+  {% if slots %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+           <th>#</th>
+            <th>Date</th>
+            <th>Time Slot</th>
+            <th>Reserved By</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for slot in slots %}
+          <tr>
+
+<td>
+<span style="font-family:var(--mono);font-size:.75rem;color:var(--muted);">
+{{ loop.index }}
+</span>
+</td>
+
+<td>
+<span class="slot-time">{{ slot.slot_date }}</span>
+</td>
+
+<td>
+<span class="slot-time">{{ slot.slot_time }}</span>
+</td>
+
+<td>
+<span class="booker-name">{{ slot.booked_by }}</span>
+
+{% if slot.phone %}
+<span class="booker-sub">{{ slot.phone }}</span>
+{% endif %}
+
+</td>
+
+<td>
+
+<div class="action-links">
+
+<a href="/edit/{{slot.id}}" class="btn btn-edit">
+Edit
+</a>
+
+<a href="/delete/{{slot.id}}" 
+class="btn btn-cancel"
+onclick="return confirm('Cancel this booking?')">
+Delete
+</a>
+
+</div>
+
+</td>
+
+</tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="table-wrap">
+      <div class="empty">
+        <div class="empty-icon">🗓</div>
+        <h3>No bookings yet</h3>
+        <p>All slots are currently available.</p>
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="page-footer">SlotBook &mdash; Reservation System</div>
+</main>
+
+</body>
+</html>
