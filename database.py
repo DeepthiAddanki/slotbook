@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "mysql+pymysql://root:root123@localhost/slot_booking"
+DATABASE_URL = "mysql+pymysql://root:lvjzZjqxrbVsOlBqNtMIoouGiChoafyd@shuttle.proxy.rlwy.net:49121/railway"
 
 engine = create_engine(DATABASE_URL)
 
