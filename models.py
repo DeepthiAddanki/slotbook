@@ -9,3 +9,5 @@ class Slot(Base):
     slot_time = Column(String(50))
     booked_by = Column(String(100))
     phone = Column(String(20))
+
+

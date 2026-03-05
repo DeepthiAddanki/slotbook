@@ -3,10 +3,11 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from datetime import datetime
-from database import SessionLocal
-from models import Slot
+from database import SessionLocal, engine
+from models import Slot, Base
 
-app = FastAPI()
+Base.metadata.create_all(bind=engine)
+
 
 templates = Jinja2Templates(directory="templates")
 
