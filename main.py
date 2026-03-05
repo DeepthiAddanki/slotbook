@@ -6,6 +6,8 @@ from datetime import datetime
 from database import SessionLocal, engine
 from models import Slot, Base
 
+app = FastAPI()
+
 Base.metadata.create_all(bind=engine)
 
 
