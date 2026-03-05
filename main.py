@@ -35,9 +35,27 @@ def show_slots(request: Request, date: str = None):
 
     slots = []
 
-    current_hour = datetime.now().hour
-    today = datetime.today().date()
+    now = datetime.now()
+    current_hour = now.hour
+    today = now.date()
 
+    
+    if selected_date == today and current_hour >= 17:
+        slots = []
+        available_slots = 0
+
+        return templates.TemplateResponse(
+            "slots.html",
+            {
+                "request": request,
+                "slots": slots,
+                "selected_date": selected_date,
+                "today": today,
+                "available_slots": available_slots
+            }
+        )
+
+    # LOOP STARTS HERE
     for time in all_slots:
 
         slot_hour = int(time.split(":")[0])
